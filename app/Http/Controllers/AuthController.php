@@ -13,7 +13,7 @@ class AuthController
 {
     public function login(Request $request) {
         $validator = Validator::make($request->all(),[
-            'email'    => 'required',
+            'login'    => 'required',
             'password' => 'required'
         ]);
 
@@ -24,7 +24,7 @@ class AuthController
             ]);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('login', $request->login)->first();
 
         if(!$user) {
             return response()->json([
@@ -33,10 +33,10 @@ class AuthController
             ]);
         }
 
-        if(!Auth::attempt($request->only(['email', 'password']))){
+        if(!Auth::attempt($request->only(['login', 'password']))){
             return response()->json([
                 'status' => false,
-                'message' => 'Email & Password does not match with our record.',
+                'message' => 'Login & Password does not match with our record.',
             ], 401);
         }
 
@@ -45,8 +45,7 @@ class AuthController
 
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'login' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
@@ -58,8 +57,7 @@ class AuthController
         }
 
         return User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
+            'login'    => $request->login,
             'password' => Hash::make($request->password),
         ]);
     }
