@@ -1,29 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController
 {
-    public function login(Request $request) {
-        $validator = Validator::make($request->all(),[
-            'login'    => 'required',
-            'password' => 'required'
-        ]);
-
-        if($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->first()
-            ]);
-        }
-
+    public function login(LoginRequest $request)
+    {
         $user = User::where('login', $request->login)->first();
 
         if(!$user) {
@@ -40,25 +29,12 @@ class AuthController
             ], 401);
         }
 
-        return ['token' => $user->createToken("API TOKEN")->plainTextToken];
+        return response()->json([
+            'token' => $user->createToken("API TOKEN")->plainTextToken,
+        ]);
     }
 
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'login' => ['required', 'string', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
-
-        if($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->first()
-            ]);
-        }
-
-        return User::create([
-            'login'    => $request->login,
-            'password' => Hash::make($request->password),
-        ]);
+    public function register(RegistrationRequest $request) {
+        return User::create($request->validated());
     }
 }
