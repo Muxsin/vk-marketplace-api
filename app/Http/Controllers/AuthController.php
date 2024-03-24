@@ -30,7 +30,7 @@ class AuthController
         }
 
         return response()->json([
-            'token' => $user->createToken("API TOKEN")->plainTextToken,
+            'token' => $user->createToken("default")->plainTextToken,
         ]);
     }
 
