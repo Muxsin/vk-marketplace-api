@@ -4,11 +4,25 @@
 
 - Docker
 - Docker Compose
+- Composer
+
+## Installation
+
+1. Copy the `.env.example` file and rename it to `.env`. Set up database configuration in the `.env` file.
+```
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+2. Run `composer install` to install dependencies
 
 ## Running
 
-1. Run `./vendor/bin/sail up` to start the project
-1. Run `./vendor/bin/sail composer install` to install dependencies
+1. Run `./vendor/bin/sail up -d` to start the project
+1. Run `./vendor/bin/sail php artisan key:generate` to generate app key
 1. Run `./vendor/bin/sail php artisan migrate --seed` to initialize database
 1. Visit http://localhost:8080
 1. Enjoy!
